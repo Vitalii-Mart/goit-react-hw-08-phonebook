@@ -1,46 +1,27 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { useEffect } from 'react';
+import { List, Total } from './ContactList.styled';
 import { useDispatch, useSelector } from 'react-redux';
-import { List, Total, Items, Caption, Button  } from './ContactList.styled';
-import { deleteContact } from 'services/contactsApi';
-import { getContacts, getFilterValue } from 'redux/selectors';
+import { fetchContacts } from 'redux/contacts/operations';
+import { selectContacts, selectFilterValue } from 'redux/contacts/selectors';
+import ContactItem from 'components/ContactItem/ContactItem';
 
-const ContactList = () => {
+export default function ContactList() {
   const dispatch = useDispatch();
-  const contacts = useSelector(getContacts);
-const filter = useSelector(getFilterValue);
-  
-  
-  // const filteredContacts = contacts.filter(contact =>
-  //   contact.name.toLowerCase().includes(filter.toLowerCase())
-  // );
+  const contacts = useSelector(selectContacts);
 
+  const filter = useSelector(selectFilterValue);
   const filteredContacts = contacts?.filter(({ name }) =>
-  name.toLowerCase().includes(filter)
-);
+    name.toLowerCase().includes(filter)
+  );
+
+  useEffect(() => {
+    dispatch(fetchContacts());
+  }, [dispatch]);
+
   return (
-    <List >
-      <Total>
-        Total contacts: {filteredContacts?.length}
-      </Total>
-      {filteredContacts?.map(elm => (
-        <Items key={elm.id}>
-          <Caption>
-            {elm.name}: {elm.phone}
-          </Caption>
-          <Button
-            onClick={() => dispatch(deleteContact(elm.id))}
-          >
-            Delete
-          </Button>
-        </Items>
-      ))}
+    <List>
+      <Total>Total contacts: {filteredContacts?.length}</Total>
+      <ContactItem filteredContacts={filteredContacts} />
     </List>
   );
 }
-
-ContactList.propTypes = {
-  onClick: PropTypes.func,
-};
-
-export default ContactList;

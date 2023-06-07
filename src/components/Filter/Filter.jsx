@@ -1,35 +1,30 @@
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { filterContact  } from '../../redux/contactsSlice';
+import { useDispatch } from 'react-redux';
+import { filterContact } from 'redux/contacts/contactsSlice';
 import PropTypes from 'prop-types';
-import { Label, Input } from './Filter.styled';
-import { getFilterValue } from 'redux/selectors';
+import TextField from '@mui/material/TextField';
+import { Box, Label, Text } from './Filter.styled';
 
-const Filter = () => {
+export default function Filter() {
   const dispatch = useDispatch();
-  const filter = useSelector(getFilterValue);
-
-  const handleFilterChange = (event) => {
-    const value = event.target.value.toLowerCase();
-    dispatch(filterContact(value));
-  };
 
   return (
-    <>
-      <Label htmlFor="find">Find contacts by name</Label>
-      <Input
+    <Box>
+      <Label htmlFor="find">
+        <Text>Find contacts by name</Text>
+      </Label>
+      <TextField
+        fullWidth
+        label="search"
+        size="small"
+        margin="dense"
         type="text"
-        id="find"
-        name="filter"
-        value={filter}
-        onChange={handleFilterChange}
+        onChange={e => dispatch(filterContact(e.target.value.toLowerCase()))}
       />
-    </>
+    </Box>
   );
-};
+}
 
 Filter.propTypes = {
   onChange: PropTypes.func,
 };
-
-export default Filter;

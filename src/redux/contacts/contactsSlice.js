@@ -1,8 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchContacts, addContact, deleteContact } from 'services/contactsApi';
+import { logOut } from 'redux/auth/operations';
+import { fetchContacts, addContact, deleteContact } from './operations';
 
 const initialState = {
-  contacts: { items: [], isLoading: false, error: null },
+  items: [],
+  isLoading: false,
+  error: null,
   filter: '',
 };
 
@@ -50,6 +53,11 @@ const contactsSlice = createSlice({
       state.error = null;
       const index = state.items.findIndex(elm => elm.id === action.payload.id);
       state.items.splice(index, 1);
+    },
+    [logOut.fulfilled](state) {
+      state.items = [];
+      state.error = null;
+      state.isLoading = false;
     },
   },
 });
