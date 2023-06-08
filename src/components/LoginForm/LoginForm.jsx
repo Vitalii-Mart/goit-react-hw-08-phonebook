@@ -7,7 +7,7 @@ import { Label, Title, Form, Box } from './LoginForm.styled';
 export const LoginForm = () => {
   const dispatch = useDispatch();
 
-  const handleSubmit = e => {
+  const handleSubmit = async e => {
     e.preventDefault();
     const form = e.currentTarget;
     const email = form.elements.email.value;
@@ -15,13 +15,14 @@ export const LoginForm = () => {
 
     if (email === '' || password === '') {
       alert(`Empty! Please enter valid email and password to Log In`);
+      return;
+    }
+
+    const result = await dispatch(logIn({ email, password }));
+
+    if (logIn.rejected.match(result)) {
+      alert(`You entered incorrect data`);
     } else {
-      dispatch(
-        logIn({
-          email,
-          password,
-        })
-      );
       form.reset();
     }
   };

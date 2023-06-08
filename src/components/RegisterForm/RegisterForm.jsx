@@ -6,7 +6,7 @@ import { Link, Box, Form, Title, Text } from './RegisterForm.styled';
 export const RegisterForm = () => {
   const dispatch = useDispatch();
 
-  const handleSubmit = e => {
+  const handleSubmit = async e => {
     e.preventDefault();
     const form = e.currentTarget;
     const name = form.elements.name.value;
@@ -16,14 +16,19 @@ export const RegisterForm = () => {
     if (name === '' || email === '' || password === '') {
       alert(`Empty! Please fill all fields to Register`);
     } else {
-      dispatch(
+      const result = await dispatch(
         register({
           name,
           email,
           password,
         })
       );
-      form.reset();
+
+      if (register.rejected.match(result)) {
+        alert(`You entered incorrect data`);
+      } else {
+        form.reset();
+      }
     }
   };
 
